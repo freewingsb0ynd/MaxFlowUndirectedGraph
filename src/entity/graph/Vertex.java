@@ -1,24 +1,18 @@
 package entity.graph;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Vertex {
-    private Vector<Edge> adjacents;
-
-    private static int numberOfVertices = 0;
+    private ArrayList<Edge> adjacents;
     private int id;
 
     public Vertex() {
-        adjacents = new Vector<Edge>();
-        this.id = numberOfVertices++;
+        adjacents = new ArrayList<Edge>();
     }
 
-    public void clear(){
-        numberOfVertices = 0;
-    }
-
-    public static int getNumberOfVertices() {
-        return numberOfVertices;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
@@ -29,7 +23,7 @@ public class Vertex {
         return adjacents.size();
     }
 
-    public Vector<Edge> getAdjacents(){
+    public ArrayList<Edge> getAdjacents(){
         return this.adjacents;
     }
 
@@ -37,8 +31,15 @@ public class Vertex {
         return this.adjacents.get(index);
     }
 
-    public void addAdjaction(Vertex v, int capacity, int correspondingIndex){
+    public void addAdjacent(Vertex v, int capacity, int correspondingIndex){
         Edge e = new Edge(this,v,capacity, correspondingIndex);
         adjacents.add(e);
     }
+
+    public void resetFlow()
+    {
+        for(Edge e: adjacents)
+            e.setFlow(0);
+    }
+
 }

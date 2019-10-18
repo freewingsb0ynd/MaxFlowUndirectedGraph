@@ -38,6 +38,21 @@ public class Edge {
         this.flow = flow;
     }
 
+    public int getResidualFlow()
+    {
+        return capacity - flow;
+    }
+
+    public void incFlow(int delta)
+    {
+        flow += delta;
+    }
+
+    public Edge reverseEdge()
+    {
+        return v.getEdge(correspondingIndex);
+    }
+
     public int getCorrespondingIndex() {
         return correspondingIndex;
     }
