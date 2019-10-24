@@ -1,6 +1,6 @@
-import entity.algorithm.Dinitz;
-import entity.algorithm.EdmondKarp;
+import algorithm.EdmondKarp;
 import entity.graph.Network;
+import entity.graph.Vertex;
 import entity.model.Sensor;
 
 import java.io.BufferedReader;
@@ -23,7 +23,7 @@ public class main {
         }
         for (File dir : dirs) {
             if (dir.isDirectory()){
-                //System.out.println("Processing folder: " + dir.getName());
+                System.out.println("Processing folder: " + dir.getName());
                 File[] files = dir.listFiles();
                 for (File f : files) {
                     //System.out.println("Processing file: " + f.getName());
@@ -35,18 +35,18 @@ public class main {
             }
         }
         System.out.println("No. of file .inp: " + inputFiles.size());
-        for (File input: inputFiles) {
-            processFile(input);
-        }
+//        for (File input: inputFiles) {
+//            processFile(input);
+//        }
 
-        //rocessFile(inputFiles.get(0));
+        processFile(inputFiles.get(11));
     }
 
     private static void processFile(File input){
         List<Sensor> sensors = new ArrayList<>();
-        int expectedResult = 0;
+//        int expectedResult = 0;
         try {
-            //System.out.println("Processing: " + input.getName());
+//            System.out.println("Processing: " + input.getName());
             FileReader fileReader = new FileReader(input);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String line = bufferedReader.readLine();
@@ -58,57 +58,19 @@ public class main {
                 sensors.add(s);
                 line = bufferedReader.readLine();
             }
-            expectedResult = Integer.parseInt(line);
+//            expectedResult = Integer.parseInt(line);
         }catch (IOException e) {
             e.printStackTrace();
         }
 
-        //System.out.println("Processed done, sensors: " + sensors.size());
+//        System.out.println("Processed done, sensors: " + sensors.size());
 
-        Network network = new Network();
+        Network network = buildFirstNetwork(sensors);
 
-        network.setS(network.newVertex());
+//        network.printNetwork();
 
-        for(int i = 0; i < sensors.size(); i++) network.newVertex();
+        EdmondKarp.maximumFlow(network);
 
-        network.setT(network.newVertex());
-
-        for (int i=0; i< sensors.size(); i++){
-            Sensor sensor = sensors.get(i);
-            if(sensor.checkOverlapLeftBound()) Network.addEdge(network.getS(), network.getVertex(i+1), sensor.getC());
-            if(sensor.checkOverlapRightBound(300)) Network.addEdge(network.getT(), network.getVertex(i+1), sensor.getC());
-            for (int j = i + 1; j < sensors.size(); j++){
-                Sensor sensor2 = sensors.get(j);
-                if(sensor.checkOverlap(sensor2)) Network.addEdge(network.getVertex(i+1), network.getVertex(j+1), Math.min(sensor.getC(), sensor2.getC()));
-            }
-        }
-
-//        Vertex[] tempVertices = new Vertex[sensors.size()+2];
-//        Vertex s = new Vertex();
-//        s.setId(0);
-//        tempVertices[0] = s;
-//        for (int i=0; i< sensors.size(); i++){
-//            Vertex realVertex = new Vertex();
-//            realVertex.setId(i+1);
-//            tempVertices[i+1] = realVertex;
-//        }
-//        Vertex t = new Vertex();
-//        t.setId(sensors.size()+1);
-//        tempVertices[sensors.size()+1] = t;
-//
-//        Network network = new Network(s,t,tempVertices.length);
-//        network.vertices = tempVertices;
-//
-//        for (int i=0; i< sensors.size(); i++){
-//            Sensor sensor = sensors.get(i);
-//            if(sensor.checkOverlapLeftBound()) Network.addEdge(s, network.vertices.get(i+1), sensor.getC());
-//            if(sensor.checkOverlapRightBound(300)) Network.addEdge(t, network.vertices[i+1], sensor.getC());
-//            for (int j = i + 1; j< sensors.size(); j++){
-//                Sensor sensor2 = sensors.get(j);
-//                if(sensor.checkOverlap(sensor2)) Network.addEdge(network.vertices[i+1], network.vertices[j+1], Math.min(sensor.getC(), sensor2.getC()));
-//            }
-//        }
-        //network.printNetwork();
 
 //        Network network2 = new Network();
 //        for(int i = 0; i < 6; ++i) network2.newVertex();
@@ -124,15 +86,83 @@ public class main {
 //        network2.addDirectedEdge(network2.getVertex(4), network2.getVertex(5), 6);
 //
 //        System.out.println(Dinitz.maximumFlow(network2));
+//
+//        System.out.println("Checked " + input.getName() + ": " + sensors.size());
+//        double start = System.nanoTime();
+//        System.out.println("\tEdmond-Karp: " + EdmondKarp.maximumFlow(network));
+//        System.out.println("-> Time:" + ((System.nanoTime() - start)/1000));
+//        network.resetFlow();
+//        start = System.nanoTime();
+//        System.out.println("\tDinitz: " + Dinitz.maximumFlow(network));
+//        System.out.println("-> Time:" + ((System.nanoTime() - start)/1000));
+    }
 
-        System.out.println("Checked " + input.getName() + ": " + sensors.size());
-        double start = System.nanoTime();
-        System.out.println("\tEdmond-Karp: " + EdmondKarp.maximumFlow(network));
-        System.out.println("-> Time:" + ((System.nanoTime() - start)/1000));
-        network.resetFlow();
-        start = System.nanoTime();
-        System.out.println("\tDinitz: " + Dinitz.maximumFlow(network));
-        System.out.println("-> Time:" + ((System.nanoTime() - start)/1000));
+    private static Network buildFirstNetwork(List<Sensor> sensors) {
+        Network network = new Network();
+
+        network.setS(network.newVertex());
+
+        for(int i = 0; i < sensors.size(); i++) network.newVertex();
+
+        network.setT(network.newVertex());
+
+        for (int i=0; i< sensors.size(); i++){
+            Sensor sensor = sensors.get(i);
+            if(sensor.checkOverlapLeftBound()) Network.addEdge(network.getS(), network.getVertex(i+1), sensor.getC());
+            if(sensor.checkOverlapRightBound(300)) Network.addEdge(network.getT(), network.getVertex(i+1), sensor.getC());
+            for (int j = i + 1; j < sensors.size(); j++){
+                Sensor sensor2 = sensors.get(j);
+                if(sensor.checkOverlap(sensor2))
+                    Network.addEdge(network.getVertex(i+1), network.getVertex(j+1), Math.min(sensor.getC(), sensor2.getC()));
+            }
+        }
+        return network;
+    }
+
+    private static void buildSecondNetwork(Network network1, List<Sensor> sensors)
+    {
+        network1.trackFlowPaths();
+
+        Network network2 = new Network();
+
+        int n = network1.numberOfVertices();
+
+        for(int i = 0; i < network1.numberOfVertices(); ++i)
+            network2.newVertex();
+
+        network2.setS(network2.getVertex(0));
+        network2.setT(network2.getVertex(n-1));
+
+        List<Integer> passedTime = network1.getPassedTime();
+
+        for(int i = 1; i < n - 1; ++i)
+            if (passedTime.get(i) > 1)
+            {
+                Vertex vertex = network2.newVertex();
+                network2.getVertex(i).setDuplicateVertex(vertex);
+                Network.addDirectedEdge(network2.getVertex(i), vertex, sensors.get(i).getC());
+            }
+
+        List<Integer> flows = network1.getFlows();
+        List<ArrayList<Vertex>> flowPaths = network1.getFlowPaths();
+
+        for (int i = 0; i < flows.size(); ++i)
+        {
+            int flow = flows.get(i);
+            List<Vertex> path = flowPaths.get(i);
+
+            Vertex lastVertex = network2.getS();
+            for(int j = 1; j < path.size(); ++j)
+            {
+                Vertex u = path.get(j);
+                if (passedTime.get(j) != 0)
+                {
+                    Network.addDirectedEdge(lastVertex, network2.getVertex(u.getId()), flow);
+                    if (u != network1.getT())
+                        lastVertex = network2.getVertex(u.getId()).getDuplicateVertex();
+                }
+            }
+        }
     }
 
 }

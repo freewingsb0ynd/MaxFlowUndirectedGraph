@@ -1,4 +1,4 @@
-package entity.algorithm;
+package algorithm;
 
 import entity.graph.Edge;
 import entity.graph.Network;
@@ -9,16 +9,15 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class EdmondKarp {
-    private static Queue<Vertex> queue;
     private static ArrayList<Edge> traces;
 
     private static boolean findPath(Network network)
     {
         traces = new ArrayList<>();
-        for(int i = 0; i < network.size(); ++i)
+        for(int i = 0; i < network.numberOfVertices(); ++i)
             traces.add(null);
 
-        queue = new LinkedList<>();
+        Queue<Vertex> queue = new LinkedList<>();
 
         Vertex source = network.getS();
         Vertex sink = network.getT();

@@ -1,4 +1,4 @@
-package entity.algorithm;
+package algorithm;
 
 import entity.graph.Edge;
 import entity.graph.Network;
@@ -16,14 +16,14 @@ public class Dinitz {
     private static boolean findPath(Network network)
     {
         levels = new ArrayList<>();
-        for(int i = 0; i < network.size(); ++i) levels.add(0);
+        for(int i = 0; i < network.numberOfVertices(); ++i) levels.add(0);
 
         queue = new LinkedList<>();
 
         Vertex source = network.getS();
         Vertex sink = network.getT();
 
-        levels.set(network.size()-1, 1);
+        levels.set(network.numberOfVertices()-1, 1);
         queue.add(sink);
 
         while (!queue.isEmpty()) {

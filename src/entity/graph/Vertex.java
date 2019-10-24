@@ -7,6 +7,16 @@ public class Vertex {
     private ArrayList<Edge> adjacents;
     private int id;
 
+    public Vertex getDuplicateVertex() {
+        return duplicateVertex;
+    }
+
+    public void setDuplicateVertex(Vertex duplicateVertex) {
+        this.duplicateVertex = duplicateVertex;
+    }
+
+    private Vertex duplicateVertex;
+
     public Vertex() {
         adjacents = new ArrayList<Edge>();
     }
