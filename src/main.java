@@ -3,6 +3,7 @@ import algorithm.EdmondKarp;
 import entity.graph.Network;
 import entity.graph.Vertex;
 import entity.model.Sensor;
+import util.Generator;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +25,7 @@ public class main {
         }
         for (File dir : dirs) {
             if (dir.isDirectory()){
-                System.out.println("Processing folder: " + dir.getName());
+                //System.out.println("Processing folder: " + dir.getName());
                 File[] files = dir.listFiles();
                 for (File f : files) {
                     //System.out.println("Processing file: " + f.getName());
@@ -41,6 +42,8 @@ public class main {
         }
 
         //processFile(inputFiles.get(11));
+        //processFile(inputFiles.get(0));
+
     }
 
     private static void processFile(File input){
@@ -67,6 +70,8 @@ public class main {
 
 //        System.out.println("Processed done, sensors: " + sensors.size());
 
+        //Generator.directionalizeOmniDirectionalSensors(sensors, 0.8, 4);
+
         Network network = buildFirstNetwork(sensors);
 
 //        network.printNetwork();
@@ -89,7 +94,7 @@ public class main {
 //
 //        System.out.println(Dinitz.maximumFlow(network2));
 //
-        System.out.println("Checked " + input.getName() + ": " + sensors.size());
+        System.out.println("Checked " + input.getName() + ": " + sensors.size() + " sensors");
         double start = System.nanoTime();
         EdmondKarp.maximumFlow(network);
         double time1E = (System.nanoTime() - start)/1000;
