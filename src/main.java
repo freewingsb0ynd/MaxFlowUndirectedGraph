@@ -1,3 +1,4 @@
+import algorithm.Dinitz;
 import algorithm.EdmondKarp;
 import entity.graph.Network;
 import entity.graph.Vertex;
@@ -35,25 +36,26 @@ public class main {
             }
         }
         System.out.println("No. of file .inp: " + inputFiles.size());
-//        for (File input: inputFiles) {
-//            processFile(input);
-//        }
+        for (File input: inputFiles) {
+            processFile(input);
+        }
 
-        processFile(inputFiles.get(11));
+        //processFile(inputFiles.get(11));
     }
 
     private static void processFile(File input){
         List<Sensor> sensors = new ArrayList<>();
+
 //        int expectedResult = 0;
         try {
 //            System.out.println("Processing: " + input.getName());
-            FileReader fileReader = new FileReader(input);
+            FileReader fileReader= new FileReader(input);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String line = bufferedReader.readLine();
             int numberOfSensors = Integer.parseInt(line);
             line = bufferedReader.readLine();
             for (int i = 0; i < numberOfSensors; i++){
-                String items[] = line.split(" ");
+                String[] items = line.split(" ");
                 Sensor s = new Sensor(Double.parseDouble(items[0]),Double.parseDouble(items[1]),Double.parseDouble(items[2]),Integer.parseInt(items[3]));
                 sensors.add(s);
                 line = bufferedReader.readLine();
@@ -69,7 +71,7 @@ public class main {
 
 //        network.printNetwork();
 
-        EdmondKarp.maximumFlow(network);
+        //EdmondKarp.maximumFlow(network);
 
 
 //        Network network2 = new Network();
@@ -87,14 +89,38 @@ public class main {
 //
 //        System.out.println(Dinitz.maximumFlow(network2));
 //
-//        System.out.println("Checked " + input.getName() + ": " + sensors.size());
-//        double start = System.nanoTime();
+        System.out.println("Checked " + input.getName() + ": " + sensors.size());
+        double start = System.nanoTime();
+        EdmondKarp.maximumFlow(network);
+        double time1E = (System.nanoTime() - start)/1000;
+
+        network.resetFlow();
+        start = System.nanoTime();
+        Dinitz.maximumFlow(network);
+        double time1D = (System.nanoTime() - start)/1000;
+
+        network.resetFlow();
+        start = System.nanoTime();
+        Network network2 = buildSecondNetwork(network, sensors);
+        double timeBuildSecondNetwork = (System.nanoTime() - start)/1000;
+
+        start = System.nanoTime();
+        EdmondKarp.maximumFlow(network2);
+        double time2E = (System.nanoTime() - start)/1000;
+
+        network2.resetFlow();
+        start = System.nanoTime();
+        Dinitz.maximumFlow(network2);
+        double time2D = (System.nanoTime() - start)/1000;
+
 //        System.out.println("\tEdmond-Karp: " + EdmondKarp.maximumFlow(network));
 //        System.out.println("-> Time:" + ((System.nanoTime() - start)/1000));
 //        network.resetFlow();
 //        start = System.nanoTime();
 //        System.out.println("\tDinitz: " + Dinitz.maximumFlow(network));
 //        System.out.println("-> Time:" + ((System.nanoTime() - start)/1000));
+        System.out.println("\tEdmond-Karp Time: \t" + (time1E + timeBuildSecondNetwork + time2E));
+        System.out.println("\tDinitz Time:\t\t" + (time1D + timeBuildSecondNetwork + time2D));
     }
 
     private static Network buildFirstNetwork(List<Sensor> sensors) {
@@ -119,7 +145,7 @@ public class main {
         return network;
     }
 
-    private static void buildSecondNetwork(Network network1, List<Sensor> sensors)
+    private static Network buildSecondNetwork(Network network1, List<Sensor> sensors)
     {
         network1.trackFlowPaths();
 
@@ -163,6 +189,7 @@ public class main {
                 }
             }
         }
+        return network2;
     }
 
 }
