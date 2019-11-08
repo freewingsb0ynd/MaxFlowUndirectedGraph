@@ -26,10 +26,6 @@ public class Edge {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
     public int getFlow() {
         return flow;
     }
@@ -57,7 +53,4 @@ public class Edge {
         return correspondingIndex;
     }
 
-    public void setCorrespondingIndex(int correspondingIndex) {
-        this.correspondingIndex = correspondingIndex;
-    }
 }

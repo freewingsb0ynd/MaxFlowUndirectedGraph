@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Dinitz {
-    private static Queue<Vertex> queue;
     private static ArrayList<Integer> levels;
 
     private static int time;
@@ -20,7 +19,7 @@ public class Dinitz {
         levels = new ArrayList<>();
         for(int i = 0; i < network.numberOfVertices(); ++i) levels.add(0);
 
-        queue = new LinkedList<>();
+        Queue<Vertex> queue = new LinkedList<>();
 
         Vertex source = network.getSource();
         Vertex sink = network.getSink();
