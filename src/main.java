@@ -24,7 +24,7 @@ public class main {
         }
         for (File dir : dirs) {
             if (dir.isDirectory()){
-                System.out.println("Processing folder: " + dir.getName());
+                //System.out.println("Processing folder: " + dir.getName());
                 File[] files = dir.listFiles();
                 if (files != null)
                     for (File f : files) {
@@ -38,7 +38,6 @@ public class main {
         for (File input: inputFiles) {
             processFile(input);
         }
-
     }
 
     private static void processFile(File input){
@@ -61,12 +60,12 @@ public class main {
         }
 
 
-
         System.out.println("Checked " + input.getName() + ": " + sensors.size());
 
         Network network = buildFirstNetwork(sensors), network2;
 
         Timer timer = new Timer();
+
         timer.start();
         EdmondKarp.maximumFlow(network);
         network2 = buildSecondNetwork(network, sensors);
