@@ -19,8 +19,8 @@ public class EdmondKarp {
 
         Queue<Vertex> queue = new LinkedList<>();
 
-        Vertex source = network.getS();
-        Vertex sink = network.getT();
+        Vertex source = network.getSource();
+        Vertex sink = network.getSink();
 
         queue.add(source);
 
@@ -47,8 +47,8 @@ public class EdmondKarp {
     {
         int delta = Integer.MAX_VALUE;
 
-        Vertex source = network.getS();
-        Vertex sink = network.getT();
+        Vertex source = network.getSource();
+        Vertex sink = network.getSink();
 
         Vertex current = sink;
         do {

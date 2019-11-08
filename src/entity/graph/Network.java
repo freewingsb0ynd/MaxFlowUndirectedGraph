@@ -3,12 +3,11 @@ package entity.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.min;
 
 public class Network {
     private ArrayList<Vertex> vertices = new ArrayList<>();
-    private Vertex s;
-    private Vertex t;
+    private Vertex source;
+    private Vertex sink;
 
     private ArrayList<Integer> passedTime;
     private ArrayList<Integer> flows;
@@ -30,20 +29,20 @@ public class Network {
         return vertices.size();
     }
 
-    public void setS(Vertex s) {
-        this.s = s;
+    public void setSource(Vertex source) {
+        this.source = source;
     }
 
-    public Vertex getS() {
-        return s;
+    public Vertex getSource() {
+        return source;
     }
 
-    public void setT(Vertex t) {
-        this.t = t;
+    public void setSink(Vertex sink) {
+        this.sink = sink;
     }
 
-    public Vertex getT() {
-        return t;
+    public Vertex getSink() {
+        return sink;
     }
 
     public Vertex newVertex()
@@ -79,7 +78,7 @@ public class Network {
     {
         passedTime.set(u.getId(), passedTime.get(u.getId()) + 1);
         currentPath.add(u);
-        if (u == t)
+        if (u == sink)
             return flow;
         ArrayList<Edge> adjacents = u.getAdjacents();
         for(Edge edge: adjacents)
@@ -87,8 +86,9 @@ public class Network {
             Vertex v = edge.getV();
             if (edge.getFlow() > 0)
             {
-                int delta = getOneFlowPath(v, currentPath, min(flow, edge.getFlow()));
+                int delta = getOneFlowPath(v, currentPath, Math.min(flow, edge.getFlow()));
                 edge.incFlow(-delta);
+                edge.reverseEdge().incFlow(delta);
                 return delta;
             }
         }
@@ -107,7 +107,7 @@ public class Network {
         while (true)
         {
             ArrayList<Vertex> path = new ArrayList<>();
-            int delta = getOneFlowPath(s, path, Integer.MAX_VALUE);
+            int delta = getOneFlowPath(source, path, Integer.MAX_VALUE);
             if (delta == 0) break;
             else
             {
@@ -116,8 +116,8 @@ public class Network {
             }
         }
 
-        passedTime.set(s.getId(), -1);
-        passedTime.set(t.getId(), -1);
+        passedTime.set(source.getId(), -1);
+        passedTime.set(sink.getId(), -1);
     }
 
     public void printNetwork(){
@@ -129,7 +129,7 @@ public class Network {
             Vertex v = vertices.get(i);
             ArrayList<Edge> edges = v.getAdjacents();
             for (Edge edge : edges) {
-                vertexInfo += "(adj: " + edge.getV().getId() + ", cap: " + edge.getCapacity() + ", corIndex: " + edge.getCorrespondingIndex() + "); ";
+                vertexInfo = vertexInfo.concat("(adj: " + edge.getV().getId() + ", cap: " + edge.getCapacity() + ", corIndex: " + edge.getCorrespondingIndex() + "); ");
             }
             System.out.println(vertexInfo);
         }
