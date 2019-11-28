@@ -62,15 +62,17 @@ public class main {
 
         System.out.println("Checked " + input.getName() + ": " + sensors.size());
 
-        Network network = buildFirstNetwork(sensors), network2;
+        Network network, network2;
 
         Timer timer = new Timer();
 
+        network = buildFirstNetwork(sensors);
         timer.start();
         EdmondKarp.maximumFlow(network);
         network2 = buildSecondNetwork(network, sensors);
         System.out.println("\tEdmond-Karp:\tresult: " + EdmondKarp.maximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
 
+        network = buildFirstNetwork(sensors);
         timer.start();
         Dinitz.maximumFlow(network);
         network2 = buildSecondNetwork(network, sensors);

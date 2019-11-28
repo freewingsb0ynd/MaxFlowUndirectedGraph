@@ -44,18 +44,15 @@ public class Dinitz {
 
     private static int residualFlow(Vertex u, int limit, Vertex sink)
     {
-        if (u == sink) {
-            return limit;
-        }
-
-        passed.set(u.getId(), time);
+        if (u == sink) return limit;
+        if (passed.get(u.getId()) == time) return 0;
 
         int delta = 0;
         ArrayList<Edge> adjancents = u.getAdjacents();
         for(Edge edge : adjancents)
         {
             Vertex v = edge.getV();
-            if (passed.get(v.getId()) != time && levels.get(v.getId()) == levels.get(u.getId()) - 1 && edge.getResidualFlow() > 0)
+            if (levels.get(v.getId()) == levels.get(u.getId()) - 1 && edge.getResidualFlow() > 0)
             {
                 int blockingFlow = residualFlow(v, Math.min(limit, edge.getResidualFlow()), sink);
                 delta += blockingFlow;
@@ -65,6 +62,7 @@ public class Dinitz {
                 if (limit == 0) return delta;
             }
         }
+        passed.set(u.getId(), time);
         return delta;
     }
 
