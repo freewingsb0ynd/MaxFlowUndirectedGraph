@@ -1,10 +1,9 @@
 package entity.graph;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class Vertex {
-    private ArrayList<Edge> adjacents;
+    private ArrayList<Edge> adjacencies;
     private int id;
 
     public Vertex getDuplicateVertex() {
@@ -18,7 +17,7 @@ public class Vertex {
     private Vertex duplicateVertex;
 
     public Vertex() {
-        adjacents = new ArrayList<Edge>();
+        adjacencies = new ArrayList<Edge>();
     }
 
     public void setId(int id) {
@@ -30,26 +29,26 @@ public class Vertex {
     }
 
     public int getCurrentIndex(){
-        return adjacents.size();
+        return adjacencies.size();
     }
 
-    public ArrayList<Edge> getAdjacents(){
-        return this.adjacents;
+    public ArrayList<Edge> getAdjacencies(){
+        return this.adjacencies;
     }
 
     public Edge getEdge(int index){
-        return this.adjacents.get(index);
+        return this.adjacencies.get(index);
     }
 
-    public void addAdjacent(Vertex v, int capacity, int correspondingIndex){
+    public void addAdjacency(Vertex v, int capacity, int correspondingIndex){
         Edge e = new Edge(this,v,capacity, correspondingIndex);
-        adjacents.add(e);
+        adjacencies.add(e);
     }
 
     public void resetFlow()
     {
-        for(Edge e: adjacents)
-            e.setFlow(0);
+        for(Edge edge: adjacencies)
+            edge.setFlow(0);
     }
 
 }

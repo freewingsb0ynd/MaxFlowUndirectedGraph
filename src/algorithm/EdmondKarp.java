@@ -27,8 +27,8 @@ public class EdmondKarp {
         while (!queue.isEmpty())
         {
             Vertex u = queue.poll();
-            ArrayList<Edge> adjacents = u.getAdjacents();
-            for(Edge edge: adjacents)
+            ArrayList<Edge> adjacencies = u.getAdjacencies();
+            for(Edge edge: adjacencies)
             {
                 Vertex v = edge.getV();
                 if (traces.get(v.getId()) == null && edge.getResidualFlow() > 0)
@@ -62,7 +62,7 @@ public class EdmondKarp {
         do {
             Edge edge = traces.get(current.getId());
             edge.incFlow(delta);
-            edge.reverseEdge().incFlow(-delta);
+            edge.getReversedEdge().incFlow(-delta);
             current = edge.getU();
         }
         while (current != source);
@@ -70,14 +70,14 @@ public class EdmondKarp {
         return delta;
     }
 
-    public static int maximumFlow(Network network)
+    public static int getMaximumFlow(Network network)
     {
-        int flow = 0;
+        int maximumFlow = 0;
 
         while (findPath(network))
-            flow += residualFlow(network);
+            maximumFlow += residualFlow(network);
 
-        return flow;
+        return maximumFlow;
     }
 
 }

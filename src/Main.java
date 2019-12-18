@@ -1,5 +1,6 @@
 import algorithm.Dinitz;
 import algorithm.EdmondKarp;
+import algorithm.PreflowPush;
 import entity.graph.Network;
 import entity.graph.Vertex;
 import entity.model.Sensor;
@@ -12,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class main {
+public class Main {
     public static void main(String[] args) {
         File logFolder = new File("./inp");
         File[] dirs = logFolder.listFiles();
@@ -67,14 +68,22 @@ public class main {
         Timer timer = new Timer();
 
         timer.start();
-        EdmondKarp.maximumFlow(network);
+        System.out.print("\tEdmond-Karp:\t1st network: " + EdmondKarp.getMaximumFlow(network));
         network2 = buildSecondNetwork(network, sensors);
-        System.out.println("\tEdmond-Karp:\tresult: " + EdmondKarp.maximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
+        System.out.println("\t\t2nd network: " + EdmondKarp.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
+        network.resetFlow();
 
         timer.start();
-        Dinitz.maximumFlow(network);
+        System.out.print("\tDinitz:\t\t\t1st network: " + Dinitz.getMaximumFlow(network));
         network2 = buildSecondNetwork(network, sensors);
-        System.out.println("\tDinitz:\t\t\tresult: " + Dinitz.maximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
+        System.out.println("\t\t2nd network: " + Dinitz.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
+        network.resetFlow();
+
+        timer.start();
+        System.out.print("\tPreflow-Push:\t1st network: " + Dinitz.getMaximumFlow(network));
+        network2 = buildSecondNetwork(network, sensors);
+        System.out.println("\t\t2nd network: " + PreflowPush.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
+        network.resetFlow();
 
     }
 

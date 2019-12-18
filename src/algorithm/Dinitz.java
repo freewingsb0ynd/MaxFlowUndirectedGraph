@@ -29,10 +29,10 @@ public class Dinitz {
 
         while (!queue.isEmpty()) {
             Vertex u = queue.poll();
-            ArrayList<Edge> adjacents = u.getAdjacents();
-            for (Edge edge : adjacents) {
+            ArrayList<Edge> adjacencies = u.getAdjacencies();
+            for (Edge edge : adjacencies) {
                 Vertex v = edge.getV();
-                if (levels.get(v.getId()) == 0 && edge.reverseEdge().getResidualFlow() > 0) {
+                if (levels.get(v.getId()) == 0 && edge.getReversedEdge().getResidualFlow() > 0) {
                     levels.set(v.getId(), levels.get(u.getId()) + 1);
                     if (v == source) return true;
                     queue.add(v);
@@ -44,15 +44,11 @@ public class Dinitz {
 
     private static int residualFlow(Vertex u, int limit, Vertex sink)
     {
-        if (u == sink) {
-            return limit;
-        }
-
-        passed.set(u.getId(), time);
+        if (u == sink) return limit;
 
         int delta = 0;
-        ArrayList<Edge> adjancents = u.getAdjacents();
-        for(Edge edge : adjancents)
+        ArrayList<Edge> adjacencies = u.getAdjacencies();
+        for(Edge edge : adjacencies)
         {
             Vertex v = edge.getV();
             if (passed.get(v.getId()) != time && levels.get(v.getId()) == levels.get(u.getId()) - 1 && edge.getResidualFlow() > 0)
@@ -60,17 +56,20 @@ public class Dinitz {
                 int blockingFlow = residualFlow(v, Math.min(limit, edge.getResidualFlow()), sink);
                 delta += blockingFlow;
                 edge.incFlow(blockingFlow);
-                edge.reverseEdge().incFlow(-blockingFlow);
+                edge.getReversedEdge().incFlow(-blockingFlow);
                 limit -= blockingFlow;
                 if (limit == 0) return delta;
             }
         }
+
+        passed.set(u.getId(), time);
+
         return delta;
     }
 
-    public static int maximumFlow(Network network)
+    public static int getMaximumFlow(Network network)
     {
-        int flow = 0;
+        int maximumFlow = 0;
 
         Vertex source = network.getSource();
         Vertex sink = network.getSink();
@@ -83,10 +82,10 @@ public class Dinitz {
 
         while (findPath(network)) {
             time++;
-            flow += residualFlow(source, Integer.MAX_VALUE, sink);
+            maximumFlow += residualFlow(source, Integer.MAX_VALUE, sink);
         }
 
-        return flow;
+        return maximumFlow;
     }
 
 }

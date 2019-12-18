@@ -1,5 +1,8 @@
 package entity.graph;
 
+import util.Helper;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +15,8 @@ public class Network {
     private ArrayList<Integer> passedTime;
     private ArrayList<Integer> flows;
     private ArrayList<ArrayList<Vertex>> flowPaths;
+
+//    private int trackingTime = 0;
 
     public List<Integer> getPassedTime() {
         return passedTime;
@@ -58,14 +63,19 @@ public class Network {
         return vertices.get(i);
     }
 
+    public ArrayList<Vertex> getVertices()
+    {
+        return vertices;
+    }
+
     public static void addEdge(Vertex u, Vertex v, int capacity){
-        u.addAdjacent(v, capacity, v.getCurrentIndex());
-        v.addAdjacent(u, capacity, u.getCurrentIndex() - 1);
+        u.addAdjacency(v, capacity, v.getCurrentIndex());
+        v.addAdjacency(u, capacity, u.getCurrentIndex() - 1);
     }
 
     public static void addDirectedEdge(Vertex u, Vertex v, int capacity){
-        u.addAdjacent(v, capacity, v.getCurrentIndex());
-        v.addAdjacent(u, 0, u.getCurrentIndex() - 1);
+        u.addAdjacency(v, capacity, v.getCurrentIndex());
+        v.addAdjacency(u, 0, u.getCurrentIndex() - 1);
     }
 
     public void resetFlow()
@@ -76,19 +86,21 @@ public class Network {
 
     private int getOneFlowPath(Vertex u, ArrayList<Vertex> currentPath, int flow)
     {
-        passedTime.set(u.getId(), passedTime.get(u.getId()) + 1);
+        Helper.increaseAtIndex(passedTime, u.getId(), 1);
         currentPath.add(u);
         if (u == sink)
             return flow;
-        ArrayList<Edge> adjacents = u.getAdjacents();
-        for(Edge edge: adjacents)
+        ArrayList<Edge> adjacencies = u.getAdjacencies();
+        for(Edge edge: adjacencies)
         {
             Vertex v = edge.getV();
+//            if (edge.getPassed() != trackingTime && edge.getFlow() > 0)
             if (edge.getFlow() > 0)
             {
+//                edge.setPassed(trackingTime);
                 int delta = getOneFlowPath(v, currentPath, Math.min(flow, edge.getFlow()));
                 edge.incFlow(-delta);
-                edge.reverseEdge().incFlow(delta);
+                edge.getReversedEdge().incFlow(delta);
                 return delta;
             }
         }
@@ -98,8 +110,7 @@ public class Network {
     public void trackFlowPaths()
     {
         passedTime = new ArrayList<>();
-        for(int i = 0; i < vertices.size(); ++i)
-            passedTime.add(0);
+        for(int i = 0; i < vertices.size(); ++i) passedTime.add(0);
 
         flows = new ArrayList<>();
         flowPaths = new ArrayList<>();
@@ -107,6 +118,7 @@ public class Network {
         while (true)
         {
             ArrayList<Vertex> path = new ArrayList<>();
+//            trackingTime++;
             int delta = getOneFlowPath(source, path, Integer.MAX_VALUE);
             if (delta == 0) break;
             else
@@ -125,9 +137,9 @@ public class Network {
         int n = numberOfVertices();
         System.out.println("No. of sensors: " + n);
         for (int i = 0; i < n; i++){
-            String vertexInfo = "id= "+i+"; adjacents: ";
+            String vertexInfo = "id= "+i+"; adjacencies: ";
             Vertex v = vertices.get(i);
-            ArrayList<Edge> edges = v.getAdjacents();
+            ArrayList<Edge> edges = v.getAdjacencies();
             for (Edge edge : edges) {
                 vertexInfo = vertexInfo.concat("(adj: " + edge.getV().getId() + ", cap: " + edge.getCapacity() + ", corIndex: " + edge.getCorrespondingIndex() + "); ");
             }
