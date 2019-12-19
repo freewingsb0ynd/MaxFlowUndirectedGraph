@@ -6,14 +6,12 @@ public class Edge {
     private int capacity;
     private int flow;
     private int correspondingIndex;
-//    private int passed;
 
     public Edge(Vertex u, Vertex v, int capacity, int correspondingIndex) {
         this.u = u;
         this.v = v;
         this.capacity = capacity;
         this.correspondingIndex = correspondingIndex;
-//        this.passed = 0;
     }
 
     public Vertex getU() {
@@ -55,11 +53,4 @@ public class Edge {
         return correspondingIndex;
     }
 
-//    public void setPassed(int passed) {
-//        this.passed = passed;
-//    }
-//
-//    public int getPassed() {
-//        return passed;
-//    }
 }

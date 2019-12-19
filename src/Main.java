@@ -15,6 +15,8 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+//        processFile(new File("./inp/04/04.inp"));
+//        System.exit(0);
         File logFolder = new File("./inp");
         File[] dirs = logFolder.listFiles();
         List<File> inputFiles = new ArrayList<>();
@@ -71,19 +73,16 @@ public class Main {
         System.out.print("\tEdmond-Karp:\t1st network: " + EdmondKarp.getMaximumFlow(network));
         network2 = buildSecondNetwork(network, sensors);
         System.out.println("\t\t2nd network: " + EdmondKarp.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
-        network.resetFlow();
 
         timer.start();
         System.out.print("\tDinitz:\t\t\t1st network: " + Dinitz.getMaximumFlow(network));
         network2 = buildSecondNetwork(network, sensors);
         System.out.println("\t\t2nd network: " + Dinitz.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
-        network.resetFlow();
 
         timer.start();
-        System.out.print("\tPreflow-Push:\t1st network: " + Dinitz.getMaximumFlow(network));
+        System.out.print("\tPreflow-Push:\t1st network: " + PreflowPush.getMaximumFlow(network));
         network2 = buildSecondNetwork(network, sensors);
         System.out.println("\t\t2nd network: " + PreflowPush.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
-        network.resetFlow();
 
     }
 

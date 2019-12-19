@@ -28,8 +28,6 @@ public class Test {
 //        System.out.println(Dinitz.getMaximumFlow(network)); network.resetFlow();
 //        System.out.println(PreflowPush.getMaximumFlow(network)); network.resetFlow();
 
-        System.out.println(PreflowPush.getMaximumFlow(network));
-        network.trackFlowPaths();
 
     }
 }

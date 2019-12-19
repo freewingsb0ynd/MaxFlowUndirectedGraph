@@ -2,9 +2,10 @@ package entity.graph;
 
 import util.Helper;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 
 public class Network {
@@ -15,8 +16,7 @@ public class Network {
     private ArrayList<Integer> passedTime;
     private ArrayList<Integer> flows;
     private ArrayList<ArrayList<Vertex>> flowPaths;
-
-//    private int trackingTime = 0;
+    private ArrayList<Edge> traces;
 
     public List<Integer> getPassedTime() {
         return passedTime;
@@ -84,27 +84,48 @@ public class Network {
             vertex.resetFlow();
     }
 
-    private int getOneFlowPath(Vertex u, ArrayList<Vertex> currentPath, int flow)
+    private boolean findFlowPath()
     {
-        Helper.increaseAtIndex(passedTime, u.getId(), 1);
-        currentPath.add(u);
-        if (u == sink)
-            return flow;
-        ArrayList<Edge> adjacencies = u.getAdjacencies();
-        for(Edge edge: adjacencies)
+        traces = new ArrayList<>();
+        for(int i = 0; i < vertices.size(); ++i) traces.add(null);
+
+        Queue<Vertex> queue = new LinkedList<>();
+
+        queue.add(source);
+
+        while (!queue.isEmpty())
         {
-            Vertex v = edge.getV();
-//            if (edge.getPassed() != trackingTime && edge.getFlow() > 0)
-            if (edge.getFlow() > 0)
+            Vertex u = queue.poll();
+            ArrayList<Edge> adjacencies = u.getAdjacencies();
+            for(Edge edge: adjacencies)
             {
-//                edge.setPassed(trackingTime);
-                int delta = getOneFlowPath(v, currentPath, Math.min(flow, edge.getFlow()));
-                edge.incFlow(-delta);
-                edge.getReversedEdge().incFlow(delta);
-                return delta;
+                Vertex v = edge.getV();
+                if (traces.get(v.getId()) == null && edge.getFlow() > 0)
+                {
+                    traces.set(v.getId(), edge);
+                    if (v == sink)
+                        return true;
+                    queue.add(v);
+                }
             }
         }
-        return 0;
+        return false;
+    }
+
+    private int getFlowPath(Vertex current, int delta)
+    {
+        if (current == source)
+        {
+            Helper.getLast(flowPaths).add(current);
+            return delta;
+        }
+        Helper.increaseAtIndex(passedTime, current.getId(), 1);
+        Edge edge = traces.get(current.getId());
+        delta = getFlowPath(edge.getU(), Math.min(delta, edge.getFlow()));
+        Helper.getLast(flowPaths).add(current);
+        edge.incFlow(-delta);
+        edge.getReversedEdge().incFlow(delta);
+        return delta;
     }
 
     public void trackFlowPaths()
@@ -115,21 +136,24 @@ public class Network {
         flows = new ArrayList<>();
         flowPaths = new ArrayList<>();
 
-        while (true)
+        while (findFlowPath())
         {
-            ArrayList<Vertex> path = new ArrayList<>();
-//            trackingTime++;
-            int delta = getOneFlowPath(source, path, Integer.MAX_VALUE);
-            if (delta == 0) break;
-            else
-            {
-                flows.add(delta);
-                flowPaths.add(path);
-            }
+            flowPaths.add(new ArrayList<>());
+            flows.add(getFlowPath(sink, Integer.MAX_VALUE));
         }
 
         passedTime.set(source.getId(), -1);
         passedTime.set(sink.getId(), -1);
+
+//        System.out.println();
+//        for(int i = 1; i <= flowPaths.size(); ++i)
+//        {
+//            System.out.print(i + ":\t" + flows.get(i-1) + "\t\t");
+//            for(Vertex v : flowPaths.get(i-1)) System.out.print(v.getId() + "\t");
+//            System.out.println();
+//        }
+
+        resetFlow();
     }
 
     public void printNetwork(){

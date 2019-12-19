@@ -36,6 +36,7 @@ public class EdmondKarp {
                     traces.set(v.getId(), edge);
                     if (v == sink)
                         return true;
+
                     queue.add(v);
                 }
             }
