@@ -84,6 +84,27 @@ public class Main {
         network2 = buildSecondNetwork(network, sensors);
         System.out.println("\t\t2nd network: " + PreflowPush.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
 
+        //Check if method trackFlowPaths() achieves enough maximum flow
+        int maximumFlow, sum;
+
+        maximumFlow = EdmondKarp.getMaximumFlow(network);
+        network.trackFlowPaths();
+        sum = 0;
+        for(int flow: network.getFlows()) sum += flow;
+        assert sum == maximumFlow;
+
+        maximumFlow = Dinitz.getMaximumFlow(network);
+        network.trackFlowPaths();
+        sum = 0;
+        for(int flow: network.getFlows()) sum += flow;
+        assert sum == maximumFlow;
+
+        maximumFlow = PreflowPush.getMaximumFlow(network);
+        network.trackFlowPaths();
+        sum = 0;
+        for(int flow: network.getFlows()) sum += flow;
+        assert sum == maximumFlow;
+
     }
 
     private static Network buildFirstNetwork(List<Sensor> sensors) {
