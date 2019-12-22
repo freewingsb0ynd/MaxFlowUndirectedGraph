@@ -10,14 +10,10 @@ public class DirectionalSensor extends Sensor {
         super(x, y, r, c);
         //this.directions = directions;
         this.halfAngle = halfAngle;
-
+        sectors = new ArrayList<>();
         for (int i =0; i <directions.length; i++){
             addSector(x, y, r, c, halfAngle, directions[i]);
         }
-    }
-
-    public double getHalfAngle() {
-        return halfAngle;
     }
 
     public void addSector(double x, double y, double r, int c, double alpha, double viangle){
