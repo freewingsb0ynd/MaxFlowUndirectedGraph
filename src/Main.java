@@ -6,6 +6,7 @@ import entity.graph.Vertex;
 import entity.model.DirectionalSensor;
 import entity.model.Sector;
 import entity.model.Sensor;
+import jdk.nashorn.internal.runtime.Debug;
 import util.Timer;
 
 import java.io.BufferedReader;
@@ -16,10 +17,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+    private static final int WIDTH = 50;
+    private static final int HEIGHT = 20;
     public static void main(String[] args) {
-//        processFileDirectionalSensors(new File("./data/S1/250_4_40.INP"));
-//        System.exit(0);
-        File logFolder = new File("./data");
+        List<File> inputs = new ArrayList<>();
+        inputs.add(new File("./data/test/10_2_40_0.INP"));
+        inputs.add(new File("./data/test/10_2_40_1.INP"));
+        inputs.add(new File("./data/test/10_2_40_2.INP"));
+        inputs.add(new File("./data/test/10_2_40_3.INP"));
+        inputs.add(new File("./data/test/10_2_40_4.INP"));
+        inputs.add(new File("./data/test/10_2_40_5.INP"));
+        inputs.add(new File("./data/test/10_2_40_6.INP"));
+        inputs.add(new File("./data/test/10_2_40_7.INP"));
+        inputs.add(new File("./data/test/10_2_40_8.INP"));
+        inputs.add(new File("./data/test/10_2_40_9.INP"));
+        inputs.add(new File("./data/test/10_2_40_10.INP"));
+        inputs.add(new File("./data/test/10_2_40_11.INP"));
+        inputs.add(new File("./data/test/10_2_40_12.INP"));
+        inputs.add(new File("./data/test/10_2_40_13.INP"));
+        inputs.add(new File("./data/test/10_2_40_14.INP"));
+        inputs.add(new File("./data/test/10_2_40_15.INP"));
+        inputs.add(new File("./data/test/10_2_40_16.INP"));
+        inputs.add(new File("./data/test/10_2_40_17.INP"));
+        inputs.add(new File("./data/test/10_2_40_18.INP"));
+        inputs.add(new File("./data/test/10_2_40_19.INP"));
+        for (File input: inputs) {
+            processFileDirectionalSensors(input);
+        }
+        System.exit(0);
+        File logFolder = new File("./inp");
         File[] dirs = logFolder.listFiles();
         List<File> inputFiles = new ArrayList<>();
 
@@ -175,7 +201,6 @@ public class Main {
                 }
             }
         }
-        network1.resetFlow();
         return network2;
     }
 
@@ -208,7 +233,7 @@ public class Main {
     private static void processFileDirectionalSensors(File input){
         Sensor.setNumberOfSensors(0);
         List<DirectionalSensor> sensors = new ArrayList<>();
-        int W = 300, H = 150;
+
 
         try {
             System.out.println("Processing: " + input.getName());
@@ -217,8 +242,8 @@ public class Main {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String line = bufferedReader.readLine();
             items = line.split(" ");
-            W = Integer.parseInt(items[0]);
-            H = Integer.parseInt(items[1]);
+//            W = Integer.parseInt(items[0]);
+//            H = Integer.parseInt(items[1]);
             int numberOfSensors = Integer.parseInt(items[2]);
             line = bufferedReader.readLine();
             for (int i = 0; i < numberOfSensors; i++) {
