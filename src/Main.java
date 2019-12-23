@@ -21,26 +21,26 @@ public class Main {
     private static final int HEIGHT = 20;
     public static void main(String[] args) {
         List<File> inputs = new ArrayList<>();
-        inputs.add(new File("./data/test/10_2_40_0.INP"));
-        inputs.add(new File("./data/test/10_2_40_1.INP"));
-        inputs.add(new File("./data/test/10_2_40_2.INP"));
-        inputs.add(new File("./data/test/10_2_40_3.INP"));
-        inputs.add(new File("./data/test/10_2_40_4.INP"));
-        inputs.add(new File("./data/test/10_2_40_5.INP"));
-        inputs.add(new File("./data/test/10_2_40_6.INP"));
-        inputs.add(new File("./data/test/10_2_40_7.INP"));
-        inputs.add(new File("./data/test/10_2_40_8.INP"));
-        inputs.add(new File("./data/test/10_2_40_9.INP"));
-        inputs.add(new File("./data/test/10_2_40_10.INP"));
-        inputs.add(new File("./data/test/10_2_40_11.INP"));
-        inputs.add(new File("./data/test/10_2_40_12.INP"));
-        inputs.add(new File("./data/test/10_2_40_13.INP"));
-        inputs.add(new File("./data/test/10_2_40_14.INP"));
-        inputs.add(new File("./data/test/10_2_40_15.INP"));
-        inputs.add(new File("./data/test/10_2_40_16.INP"));
-        inputs.add(new File("./data/test/10_2_40_17.INP"));
-        inputs.add(new File("./data/test/10_2_40_18.INP"));
-        inputs.add(new File("./data/test/10_2_40_19.INP"));
+        inputs.add(new File("./data/test/5_2_40_0.INP"));
+        inputs.add(new File("./data/test/5_2_40_1.INP"));
+        inputs.add(new File("./data/test/5_2_40_2.INP"));
+        inputs.add(new File("./data/test/5_2_40_3.INP"));
+        inputs.add(new File("./data/test/5_2_40_4.INP"));
+        inputs.add(new File("./data/test/5_2_40_5.INP"));
+        inputs.add(new File("./data/test/5_2_40_6.INP"));
+        inputs.add(new File("./data/test/5_2_40_7.INP"));
+        inputs.add(new File("./data/test/5_2_40_8.INP"));
+        inputs.add(new File("./data/test/5_2_40_9.INP"));
+        inputs.add(new File("./data/test/5_2_40_10.INP"));
+        inputs.add(new File("./data/test/5_2_40_11.INP"));
+        inputs.add(new File("./data/test/5_2_40_12.INP"));
+        inputs.add(new File("./data/test/5_2_40_13.INP"));
+        inputs.add(new File("./data/test/5_2_40_14.INP"));
+        inputs.add(new File("./data/test/5_2_40_15.INP"));
+        inputs.add(new File("./data/test/5_2_40_16.INP"));
+        inputs.add(new File("./data/test/5_2_40_17.INP"));
+        inputs.add(new File("./data/test/5_2_40_18.INP"));
+        inputs.add(new File("./data/test/5_2_40_19.INP"));
         for (File input: inputs) {
             processFileDirectionalSensors(input);
         }
