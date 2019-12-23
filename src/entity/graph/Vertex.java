@@ -1,10 +1,21 @@
 package entity.graph;
 
+import entity.model.Sensor;
+
 import java.util.ArrayList;
 
 public class Vertex {
     private ArrayList<Edge> adjacencies;
     private int id;
+    private Sensor sensor;
+
+    public void setSensor(Sensor sensor) {
+        this.sensor = sensor;
+    }
+
+    public Sensor getSensor() {
+        return sensor;
+    }
 
     public Vertex getDuplicateVertex() {
         return duplicateVertex;

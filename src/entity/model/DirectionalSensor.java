@@ -11,8 +11,8 @@ public class DirectionalSensor extends Sensor {
         //this.directions = directions;
         this.halfAngle = halfAngle;
         sectors = new ArrayList<>();
-        for (int i =0; i <directions.length; i++){
-            addSector(x, y, r, c, halfAngle, directions[i]);
+        for (double direction : directions) {
+            addSector(x, y, r, c, halfAngle, direction);
         }
     }
 

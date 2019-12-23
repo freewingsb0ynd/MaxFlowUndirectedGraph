@@ -18,15 +18,15 @@ public class Network {
     private ArrayList<ArrayList<Vertex>> flowPaths;
     private ArrayList<Edge> traces;
 
-    public List<Integer> getPassedTime() {
+    public ArrayList<Integer> getPassedTime() {
         return passedTime;
     }
 
-    public List<Integer> getFlows() {
+    public ArrayList<Integer> getFlows() {
         return flows;
     }
 
-    public List<ArrayList<Vertex>> getFlowPaths() {
+    public ArrayList<ArrayList<Vertex>> getFlowPaths() {
         return flowPaths;
     }
 

@@ -1,16 +1,27 @@
 package entity.model;
 
 public class Sensor {
+    private static int numberOfSensors = 0;
+    private int id;
     private double x;
     private double y;
     private double r;
     private int c;
 
     public Sensor(double x, double y, double r, int c) {
+        this.id = ++numberOfSensors;
         this.x = x;
         this.y = y;
         this.r = r;
         this.c = c;
+    }
+
+    public static int getNumberOfSensors() {
+        return numberOfSensors;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public double getX() {
@@ -43,7 +54,7 @@ public class Sensor {
     {
         //TODO: Check if sensor S1 with vector direction d1 overlaps sensor S2 with vector direction d2
         double d = (x-s.getX())*(x-s.getX())+(y-s.getY())*(y-s.getY());
-        if(d>(r+s.getR())*(r+s.getR())){
+        if (d>(r+s.getR())*(r+s.getR())){
             return false;
         }
         return true;

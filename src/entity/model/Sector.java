@@ -46,6 +46,10 @@ public class Sector {
         return c;
     }
 
+    public DirectionalSensor getMaster() {
+        return master;
+    }
+
     public boolean checkOverlapRightBound(double width) {
         if (viangle >= alpha && viangle <= 2*Math.PI - alpha) {
             double xmax = Math.max(center.x, Math.max(vex1.x, vex2.x));
