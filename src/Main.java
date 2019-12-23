@@ -20,32 +20,35 @@ public class Main {
     private static final int WIDTH = 50;
     private static final int HEIGHT = 20;
     public static void main(String[] args) {
+//        processFileDirectionalSensors(new File("./data/test/5_2_40_7.INP"));
+//        System.exit(0);
+//
         List<File> inputs = new ArrayList<>();
-        inputs.add(new File("./data/test/5_2_40_0.INP"));
-        inputs.add(new File("./data/test/5_2_40_1.INP"));
-        inputs.add(new File("./data/test/5_2_40_2.INP"));
-        inputs.add(new File("./data/test/5_2_40_3.INP"));
-        inputs.add(new File("./data/test/5_2_40_4.INP"));
-        inputs.add(new File("./data/test/5_2_40_5.INP"));
-        inputs.add(new File("./data/test/5_2_40_6.INP"));
-        inputs.add(new File("./data/test/5_2_40_7.INP"));
-        inputs.add(new File("./data/test/5_2_40_8.INP"));
-        inputs.add(new File("./data/test/5_2_40_9.INP"));
+//        inputs.add(new File("./data/test/5_2_40_0.INP"));
+//        inputs.add(new File("./data/test/5_2_40_1.INP"));
+//        inputs.add(new File("./data/test/5_2_40_2.INP"));
+//        inputs.add(new File("./data/test/5_2_40_3.INP"));
+//        inputs.add(new File("./data/test/5_2_40_4.INP"));
+//        inputs.add(new File("./data/test/5_2_40_5.INP"));
+//        inputs.add(new File("./data/test/5_2_40_6.INP"));
+//        inputs.add(new File("./data/test/5_2_40_7.INP"));
+//        inputs.add(new File("./data/test/5_2_40_8.INP"));
+//        inputs.add(new File("./data/test/5_2_40_9.INP"));
         inputs.add(new File("./data/test/5_2_40_10.INP"));
-        inputs.add(new File("./data/test/5_2_40_11.INP"));
-        inputs.add(new File("./data/test/5_2_40_12.INP"));
-        inputs.add(new File("./data/test/5_2_40_13.INP"));
-        inputs.add(new File("./data/test/5_2_40_14.INP"));
-        inputs.add(new File("./data/test/5_2_40_15.INP"));
-        inputs.add(new File("./data/test/5_2_40_16.INP"));
-        inputs.add(new File("./data/test/5_2_40_17.INP"));
-        inputs.add(new File("./data/test/5_2_40_18.INP"));
-        inputs.add(new File("./data/test/5_2_40_19.INP"));
+//        inputs.add(new File("./data/test/5_2_40_11.INP"));
+//        inputs.add(new File("./data/test/5_2_40_12.INP"));
+//        inputs.add(new File("./data/test/5_2_40_13.INP"));
+//        inputs.add(new File("./data/test/5_2_40_14.INP"));
+//        inputs.add(new File("./data/test/5_2_40_15.INP"));
+//        inputs.add(new File("./data/test/5_2_40_16.INP"));
+//        inputs.add(new File("./data/test/5_2_40_17.INP"));
+//        inputs.add(new File("./data/test/5_2_40_18.INP"));
+//        inputs.add(new File("./data/test/5_2_40_19.INP"));
         for (File input: inputs) {
             processFileDirectionalSensors(input);
         }
         System.exit(0);
-        File logFolder = new File("./inp");
+        File logFolder = new File("./data");
         File[] dirs = logFolder.listFiles();
         List<File> inputFiles = new ArrayList<>();
 
@@ -157,8 +160,7 @@ public class Main {
         return network;
     }
 
-    private static Network buildSecondNetwork(Network network1, List<Sensor> sensors)
-    {
+    private static Network buildSecondNetwork(Network network1, List<Sensor> sensors) {
         network1.trackFlowPaths();
 
         Network network2 = new Network();
@@ -205,35 +207,105 @@ public class Main {
     }
 
     private static Network buildFirstNetworkDirectionalSensor(List<DirectionalSensor> sensors) {
-        List<Sector> allSectors = new ArrayList<>();
+        List<Sector> sectors = new ArrayList<>();
         for(DirectionalSensor sensor : sensors) {
-            allSectors.addAll(sensor.sectors);
+            sectors.addAll(sensor.sectors);
         }
-        System.out.println("Added " + allSectors.size() + " sectors");
+        System.out.println("Added " + sectors.size() + " sectors");
 
         Network network = new Network();
         network.setSource(network.newVertex());
-        for(Sector sector: allSectors) network.newVertex().setSensor(sector.getMaster());
+        for(Sector sector: sectors) network.newVertex().setSensor(sector.getMaster());
         network.setSink(network.newVertex());
+        int n = network.getVertices().size();
+        for(int i = 0; i < sectors.size(); ++i)
+        {
+            Vertex vertex = network.newVertex();
+            Sector sector = sectors.get(i);
+            vertex.setSensor(sector.getMaster());
+            Network.addEdge(network.getVertex(i + 1), vertex, sector.getC());
+        }
 
-        for (int i=0; i< allSectors.size(); i++){
-            Sector sector = allSectors.get(i);
-            if(sector.checkOverlapLeftBound()) Network.addEdge(network.getSource(), network.getVertex(i+1), sector.getC());
-            if(sector.checkOverlapRightBound(WIDTH)) Network.addEdge(network.getSink(), network.getVertex(i+1), sector.getC());
-            for (int j = i + 1; j < allSectors.size(); j++){
-                Sector sector2 = allSectors.get(j);
-                if(sector.checkOverlap(sector2))
-                    Network.addEdge(network.getVertex(i+1), network.getVertex(j+1), Math.min(sector.getC(), sector2.getC()));
+        for (int i=0; i< sectors.size(); i++){
+            Sector sector1 = sectors.get(i);
+            if(sector1.checkOverlapLeftBound()) Network.addDirectedEdge(network.getSource(), network.getVertex(i+1), sector1.getC());
+            if(sector1.checkOverlapRightBound(WIDTH)) Network.addDirectedEdge(network.getVertex(i+n), network.getSink(), sector1.getC());
+            for (int j = i + 1; j < sectors.size(); j++){
+                Sector sector2 = sectors.get(j);
+                if (sector1.getMaster() != sector2.getMaster() && sector1.checkOverlap(sector2)) {
+                    Network.addDirectedEdge(network.getVertex(i+n), network.getVertex(j+1), Math.min(sector1.getC(), sector2.getC()));
+                    Network.addDirectedEdge(network.getVertex(j+n), network.getVertex(i+1), Math.min(sector1.getC(), sector2.getC()));
+                }
             }
         }
         return network;
     }
 
+    private static Network buildSecondNetworkDirectionalSensors(Network network1, List<DirectionalSensor> sensors)
+    {
+        network1.trackFlowPaths();
+
+        Network network2 = new Network();
+
+        int n = sensors.size() + 2;
+
+        for(int i = 0; i < n; ++i)
+            network2.newVertex();
+
+        network2.setSource(network2.getVertex(0));
+        network2.setSink(network2.getVertex(n - 1));
+
+        ArrayList<Integer> vertexPassedTime = network1.getPassedTime();
+
+        ArrayList<Integer> sensorPassedTime = new ArrayList<>();
+
+        for(Sensor sensor: sensors)
+        {
+            int passedTime = 0;
+            for(Vertex vertex: network1.getVertices())
+                if (vertex.getSensor() == sensor)
+                    passedTime += vertexPassedTime.get(vertex.getId());
+            sensorPassedTime.add(passedTime);
+        }
+
+        for(int i = 0; i < sensors.size(); ++i)
+            if (sensorPassedTime.get(i) > 1)
+            {
+                Vertex vertex = network2.newVertex();
+                Sensor sensor = sensors.get(i);
+                vertex.setSensor(sensor);
+                network2.getVertex(i + 1).setDuplicateVertex(vertex);
+                Network.addDirectedEdge(network2.getVertex(i + 1), vertex, sensor.getC());
+            }
+
+        ArrayList<Integer> flows = network1.getFlows();
+        ArrayList<ArrayList<Vertex>> flowPaths = network1.getFlowPaths();
+
+        for(int i = 0; i < flows.size(); ++i)
+        {
+            int flow = flows.get(i);
+            ArrayList<Vertex> path = flowPaths.get(i);
+
+            Vertex lastVertex = network2.getSource();
+            for(int j = 1; j < path.size() - 1; ++j)
+            {
+                Sensor sensor = path.get(j).getSensor();
+                if (sensorPassedTime.get(sensor.getId() - 1) > 2)
+                {
+                    Network.addDirectedEdge(lastVertex, network2.getVertex(sensor.getId()), flow);
+                    lastVertex = network2.getVertex(sensor.getId()).getDuplicateVertex();
+                }
+            }
+            Network.addDirectedEdge(lastVertex, network2.getSink(), flow);
+        }
+
+        network1.resetFlow();
+        return network2;
+    }
 
     private static void processFileDirectionalSensors(File input){
         Sensor.setNumberOfSensors(0);
         List<DirectionalSensor> sensors = new ArrayList<>();
-
 
         try {
             System.out.println("Processing: " + input.getName());
@@ -266,6 +338,8 @@ public class Main {
         System.out.println("Readed " + input.getName() + ": " + sensors.size() + " directional sensors");
 
         Network network = buildFirstNetworkDirectionalSensor(sensors), network2;
+        //network.printEdges();
+        //network.printNetwork();
 
         Timer timer = new Timer();
         int sum, maximumFlow;
@@ -276,7 +350,7 @@ public class Main {
         sum = 0;
         for(int flow: network.getFlows()) sum += flow;
         assert sum == maximumFlow;
-        System.out.println("\t\t2nd network: " + EdmondKarp.getMaximumFlow(network2) + "\t\ttime: " + timer.getTimeInMilliseconds() + " ms");
+        System.out.println("\t\t2nd network: " + EdmondKarp.getMaximumFlow(network2) + "\t\ttime #2: " + timer.getTimeInMilliseconds() + " ms");
 
         timer.start();
         System.out.print("\tDinitz:\t\t\t1st network: " + (maximumFlow = Dinitz.getMaximumFlow(network)) + "\t\ttime #1:" + timer.getTimeInMilliseconds() + " ms");
@@ -284,7 +358,7 @@ public class Main {
         sum = 0;
         for(int flow: network.getFlows()) sum += flow;
         assert sum == maximumFlow;
-        System.out.println("\t\t2nd network: " + Dinitz.getMaximumFlow(network2) + "\t\ttime: " + timer.getTimeInMilliseconds() + " ms");
+        System.out.println("\t\t2nd network: " + Dinitz.getMaximumFlow(network2) + "\t\ttime #2: " + timer.getTimeInMilliseconds() + " ms");
 
         timer.start();
         System.out.print("\tPreflow-Push:\t1st network: " + (maximumFlow = PreflowPush.getMaximumFlow(network)) + "\t\ttime #1:" + timer.getTimeInMilliseconds() + " ms");
@@ -374,66 +448,6 @@ public class Main {
 //        return network2;
 //    }
 
-    private static Network buildSecondNetworkDirectionalSensors(Network network1, List<DirectionalSensor> sensors)
-    {
-        network1.trackFlowPaths();
 
-        Network network2 = new Network();
-
-        int n = sensors.size() + 2;
-
-        for(int i = 0; i < n; ++i)
-            network2.newVertex();
-
-        network2.setSource(network2.getVertex(0));
-        network2.setSink(network2.getVertex(n - 1));
-
-        ArrayList<Integer> vertexPassedTime = network1.getPassedTime();
-
-        ArrayList<Integer> sensorPassedTime = new ArrayList<>();
-
-        for(Sensor sensor: sensors)
-        {
-            int passedTime = 0;
-            for(Vertex vertex: network1.getVertices())
-                if (vertex.getSensor() == sensor)
-                    passedTime += vertexPassedTime.get(vertex.getId());
-            sensorPassedTime.add(passedTime);
-        }
-
-        for(int i = 0; i < sensors.size(); ++i)
-            if (sensorPassedTime.get(i) > 1)
-            {
-                Vertex vertex = network2.newVertex();
-                Sensor sensor = sensors.get(i);
-                vertex.setSensor(sensor);
-                network2.getVertex(i + 1).setDuplicateVertex(vertex);
-                Network.addDirectedEdge(network2.getVertex(i + 1), vertex, sensor.getC());
-            }
-
-        ArrayList<Integer> flows = network1.getFlows();
-        ArrayList<ArrayList<Vertex>> flowPaths = network1.getFlowPaths();
-
-        for(int i = 0; i < flows.size(); ++i)
-        {
-            int flow = flows.get(i);
-            ArrayList<Vertex> path = flowPaths.get(i);
-
-            Vertex lastVertex = network2.getSource();
-            for(int j = 1; j < path.size() - 1; ++j)
-            {
-                Sensor sensor = path.get(j).getSensor();
-                if (sensorPassedTime.get(sensor.getId() - 1) != 1)
-                {
-                    Network.addDirectedEdge(lastVertex, network2.getVertex(sensor.getId()), flow);
-                    lastVertex = network2.getVertex(sensor.getId()).getDuplicateVertex();
-                }
-            }
-            Network.addDirectedEdge(lastVertex, network2.getSink(), flow);
-        }
-
-        network1.resetFlow();
-        return network2;
-    }
 
 }

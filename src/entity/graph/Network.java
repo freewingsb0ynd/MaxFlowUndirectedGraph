@@ -145,13 +145,13 @@ public class Network {
         passedTime.set(source.getId(), -1);
         passedTime.set(sink.getId(), -1);
 
-//        System.out.println();
-//        for(int i = 1; i <= flowPaths.size(); ++i)
-//        {
-//            System.out.print(i + ":\t" + flows.get(i-1) + "\t\t");
-//            for(Vertex v : flowPaths.get(i-1)) System.out.print(v.getId() + "\t");
-//            System.out.println();
-//        }
+        System.out.println();
+        for(int i = 1; i <= flowPaths.size(); ++i)
+        {
+            System.out.print(i + ":\t" + flows.get(i-1) + "\t\t");
+            for(Vertex v : flowPaths.get(i-1)) System.out.print(v.getId() + "\t");
+            System.out.println();
+        }
 
         resetFlow();
     }
@@ -170,6 +170,15 @@ public class Network {
             System.out.println(vertexInfo);
         }
         System.out.println("=============");
+    }
+
+    public void printEdges()
+    {
+        System.out.println("===EDGES===");
+        for(Vertex vertex: vertices)
+            for(Edge edge: vertex.getAdjacencies())
+                if (vertex.getId() < edge.getV().getId())
+                    System.out.println(vertex.getId() + " " + edge.getV().getId() + " " + edge.getCapacity());
     }
 
 }
