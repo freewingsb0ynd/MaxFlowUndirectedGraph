@@ -17,9 +17,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+    private static final int WIDTH = 50;
+    private static final int HEIGHT = 20;
     public static void main(String[] args) {
-//        processFileDirectionalSensors(new File("./data/S1/50_4_40.INP"));
-//        System.exit(0);
+        List<File> inputs = new ArrayList<>();
+        inputs.add(new File("./data/test/10_2_40_0.INP"));
+        inputs.add(new File("./data/test/10_2_40_1.INP"));
+        inputs.add(new File("./data/test/10_2_40_2.INP"));
+        inputs.add(new File("./data/test/10_2_40_3.INP"));
+        inputs.add(new File("./data/test/10_2_40_4.INP"));
+        inputs.add(new File("./data/test/10_2_40_5.INP"));
+        inputs.add(new File("./data/test/10_2_40_6.INP"));
+        inputs.add(new File("./data/test/10_2_40_7.INP"));
+        inputs.add(new File("./data/test/10_2_40_8.INP"));
+        inputs.add(new File("./data/test/10_2_40_9.INP"));
+        inputs.add(new File("./data/test/10_2_40_10.INP"));
+        inputs.add(new File("./data/test/10_2_40_11.INP"));
+        inputs.add(new File("./data/test/10_2_40_12.INP"));
+        inputs.add(new File("./data/test/10_2_40_13.INP"));
+        inputs.add(new File("./data/test/10_2_40_14.INP"));
+        inputs.add(new File("./data/test/10_2_40_15.INP"));
+        inputs.add(new File("./data/test/10_2_40_16.INP"));
+        inputs.add(new File("./data/test/10_2_40_17.INP"));
+        inputs.add(new File("./data/test/10_2_40_18.INP"));
+        inputs.add(new File("./data/test/10_2_40_19.INP"));
+        for (File input: inputs) {
+            processFileDirectionalSensors(input);
+        }
+        System.exit(0);
         File logFolder = new File("./inp");
         File[] dirs = logFolder.listFiles();
         List<File> inputFiles = new ArrayList<>();
@@ -45,6 +70,7 @@ public class Main {
             processFile(input);
         }
     }
+
 
     private static void processFile(File input){
         List<Sensor> sensors = new ArrayList<>();
@@ -194,7 +220,7 @@ public class Main {
         for (int i=0; i< allSectors.size(); i++){
             Sector sector = allSectors.get(i);
             if(sector.checkOverlapLeftBound()) Network.addEdge(network.getSource(), network.getVertex(i+1), sector.getC());
-            if(sector.checkOverlapRightBound(300)) Network.addEdge(network.getSink(), network.getVertex(i+1), sector.getC());
+            if(sector.checkOverlapRightBound(WIDTH)) Network.addEdge(network.getSink(), network.getVertex(i+1), sector.getC());
             for (int j = i + 1; j < allSectors.size(); j++){
                 Sector sector2 = allSectors.get(j);
                 if(sector.checkOverlap(sector2))
@@ -207,7 +233,7 @@ public class Main {
 
     private static void processFileDirectionalSensors(File input){
         List<DirectionalSensor> sensors = new ArrayList<>();
-        int W = 300, H = 150;
+
 
         try {
             System.out.println("Processing: " + input.getName());
@@ -216,8 +242,8 @@ public class Main {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String line = bufferedReader.readLine();
             items = line.split(" ");
-            W = Integer.parseInt(items[0]);
-            H = Integer.parseInt(items[1]);
+//            W = Integer.parseInt(items[0]);
+//            H = Integer.parseInt(items[1]);
             int numberOfSensors = Integer.parseInt(items[2]);
             line = bufferedReader.readLine();
             for (int i = 0; i < numberOfSensors; i++) {
