@@ -7,8 +7,8 @@ public class Timer {
         startTime = System.nanoTime();
     }
 
-    public double getTime() {
-        return (double) (System.nanoTime() - startTime) / 1000;
+    public double getTimeInMilliseconds() {
+        return (double) (System.nanoTime() - startTime) / 1000000;
     }
 
 }

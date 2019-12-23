@@ -16,6 +16,10 @@ public class Sensor {
         this.c = c;
     }
 
+    public static void setNumberOfSensors(int numberOfSensors) {
+        Sensor.numberOfSensors = numberOfSensors;
+    }
+
     public static int getNumberOfSensors() {
         return numberOfSensors;
     }

@@ -6,7 +6,6 @@ import entity.graph.Vertex;
 import entity.model.DirectionalSensor;
 import entity.model.Sector;
 import entity.model.Sensor;
-import jdk.nashorn.internal.runtime.Debug;
 import util.Timer;
 
 import java.io.BufferedReader;
@@ -18,9 +17,9 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-//        processFileDirectionalSensors(new File("./data/S1/50_4_40.INP"));
+//        processFileDirectionalSensors(new File("./data/S1/250_4_40.INP"));
 //        System.exit(0);
-        File logFolder = new File("./inp");
+        File logFolder = new File("./data");
         File[] dirs = logFolder.listFiles();
         List<File> inputFiles = new ArrayList<>();
 
@@ -34,15 +33,15 @@ public class Main {
                 File[] files = dir.listFiles();
                 if (files != null)
                     for (File f : files) {
-                        if(f.getName().endsWith(".inp")){
+                        if(f.getName().endsWith(".INP")){
                             inputFiles.add(f);
                         }
                     }
             }
         }
-        System.out.println("No. of file .inp: " + inputFiles.size());
+        System.out.println("Number of file .INP: " + inputFiles.size());
         for (File input: inputFiles) {
-            processFile(input);
+            processFileDirectionalSensors(input);
         }
     }
 
@@ -75,17 +74,17 @@ public class Main {
         timer.start();
         System.out.print("\tEdmond-Karp:\t1st network: " + EdmondKarp.getMaximumFlow(network));
         network2 = buildSecondNetwork(network, sensors);
-        System.out.println("\t\t2nd network: " + EdmondKarp.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
+        System.out.println("\t\t2nd network: " + EdmondKarp.getMaximumFlow(network2) + "\t\ttime: " + timer.getTimeInMilliseconds() + " ms");
 
         timer.start();
         System.out.print("\tDinitz:\t\t\t1st network: " + Dinitz.getMaximumFlow(network));
         network2 = buildSecondNetwork(network, sensors);
-        System.out.println("\t\t2nd network: " + Dinitz.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
+        System.out.println("\t\t2nd network: " + Dinitz.getMaximumFlow(network2) + "\t\ttime: " + timer.getTimeInMilliseconds() + " ms");
 
         timer.start();
-        System.out.print("\tPreflow-Push:\t1st network: " + PreflowPush.getMaximumFlow(network));
+        System.out.print("\tPreflow-Push:\t1st network: " + Dinitz.getMaximumFlow(network));
         network2 = buildSecondNetwork(network, sensors);
-        System.out.println("\t\t2nd network: " + PreflowPush.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
+        System.out.println("\t\t2nd network: " + PreflowPush.getMaximumFlow(network2) + "\t\ttime: " + timer.getTimeInMilliseconds() + " ms");
 
         //Check if method trackFlowPaths() achieves enough maximum flow
         int maximumFlow, sum;
@@ -176,6 +175,7 @@ public class Main {
                 }
             }
         }
+        network1.resetFlow();
         return network2;
     }
 
@@ -206,6 +206,7 @@ public class Main {
 
 
     private static void processFileDirectionalSensors(File input){
+        Sensor.setNumberOfSensors(0);
         List<DirectionalSensor> sensors = new ArrayList<>();
         int W = 300, H = 150;
 
@@ -242,21 +243,31 @@ public class Main {
         Network network = buildFirstNetworkDirectionalSensor(sensors), network2;
 
         Timer timer = new Timer();
+        int sum, maximumFlow;
 //
         timer.start();
-        System.out.print("\tEdmond-Karp:\t1st network: " + EdmondKarp.getMaximumFlow(network));
+        System.out.print("\tEdmond-Karp:\t1st network: " + (maximumFlow = EdmondKarp.getMaximumFlow(network)) + "\t\ttime #1:" + timer.getTimeInMilliseconds() + " ms");
         network2 = buildSecondNetworkDirectionalSensors(network, sensors);
-        System.out.println("\t\t2nd network: " + EdmondKarp.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
+        sum = 0;
+        for(int flow: network.getFlows()) sum += flow;
+        assert sum == maximumFlow;
+        System.out.println("\t\t2nd network: " + EdmondKarp.getMaximumFlow(network2) + "\t\ttime: " + timer.getTimeInMilliseconds() + " ms");
 
         timer.start();
-        System.out.print("\tDinitz:\t\t\t1st network: " + Dinitz.getMaximumFlow(network));
+        System.out.print("\tDinitz:\t\t\t1st network: " + (maximumFlow = Dinitz.getMaximumFlow(network)) + "\t\ttime #1:" + timer.getTimeInMilliseconds() + " ms");
         network2 = buildSecondNetworkDirectionalSensors(network, sensors);
-        System.out.println("\t\t2nd network: " + Dinitz.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
+        sum = 0;
+        for(int flow: network.getFlows()) sum += flow;
+        assert sum == maximumFlow;
+        System.out.println("\t\t2nd network: " + Dinitz.getMaximumFlow(network2) + "\t\ttime: " + timer.getTimeInMilliseconds() + " ms");
 
         timer.start();
-        System.out.print("\tPreflow-Push:\t1st network: " + PreflowPush.getMaximumFlow(network));
+        System.out.print("\tPreflow-Push:\t1st network: " + (maximumFlow = PreflowPush.getMaximumFlow(network)) + "\t\ttime #1:" + timer.getTimeInMilliseconds() + " ms");
         network2 = buildSecondNetworkDirectionalSensors(network, sensors);
-        System.out.println("\t\t2nd network: " + PreflowPush.getMaximumFlow(network2) + "\t\ttime: " + timer.getTime() + " ms");
+        sum = 0;
+        for(int flow: network.getFlows()) sum += flow;
+        assert sum == maximumFlow;
+        System.out.println("\t\t2nd network: " + Dinitz.getMaximumFlow(network2) + "\t\ttime #2: " + timer.getTimeInMilliseconds() + " ms");
 
 //        timer.start();
 //        System.out.print("\tDinitz:\t\t\t1st network: " + Dinitz.getMaximumFlow(network));
