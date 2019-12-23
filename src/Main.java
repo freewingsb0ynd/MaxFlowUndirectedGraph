@@ -219,7 +219,7 @@ public class Main {
         for (int i=0; i< allSectors.size(); i++){
             Sector sector = allSectors.get(i);
             if(sector.checkOverlapLeftBound()) Network.addEdge(network.getSource(), network.getVertex(i+1), sector.getC());
-            if(sector.checkOverlapRightBound(300)) Network.addEdge(network.getSink(), network.getVertex(i+1), sector.getC());
+            if(sector.checkOverlapRightBound(WIDTH)) Network.addEdge(network.getSink(), network.getVertex(i+1), sector.getC());
             for (int j = i + 1; j < allSectors.size(); j++){
                 Sector sector2 = allSectors.get(j);
                 if(sector.checkOverlap(sector2))
